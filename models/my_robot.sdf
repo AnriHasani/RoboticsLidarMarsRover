@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<sdf version="1.9">
+  <model name="my_robot">
+
+    <link name="body">
+      <pose>0 0 0.2 0 0 0</pose>
+
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.5 0.3 0.2</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.5 0.3 0.2</size>
+          </box>
+        </geometry>
+      </visual>
+
+      <inertial>
+        <mass>1.0</mass>
+      </inertial>
+    </link>
+
+  </model>
+</sdf>
