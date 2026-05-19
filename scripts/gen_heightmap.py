@@ -26,7 +26,7 @@ def fbm(x,y,p,octaves=7,scale=4.0):
         val+=noise(x*freq/scale,y*freq/scale,p)*amp; mx+=amp; amp*=0.5; freq*=2.0
     return val/mx
 
-def generate(size=257, seed=1337, octaves=7, scale=4.0, craters=5):
+def generate(size=257, seed=1337, octaves=4, scale=12.0, craters=5):
     p=make_perm(seed)
     data=np.zeros((size,size),dtype=np.float32)
     for y in range(size):

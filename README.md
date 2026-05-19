@@ -74,9 +74,12 @@ Add this to `~/.bashrc`:
 
 ```bash
 export GZ_IP=127.0.0.1
+export LIBGL_ALWAYS_SOFTWARE=1
+export QT_QPA_PLATFORM=xcb
+export GDK_BACKEND=x11
 ```
 
-Gazebo runs inside a container (Docker/Podman) where its transport discovery (UDP multicast) doesn't work. Forcing `GZ_IP=127.0.0.1` makes GUI and server communicate properly via localhost.
+Gazebo runs inside a container (Docker/Podman) where its transport discovery (UDP multicast) doesn't work and the GPU may not be available for native OpenGL. Forcing `GZ_IP=127.0.0.1` makes GUI and server communicate properly via localhost, `LIBGL_ALWAYS_SOFTWARE=1` helps avoid GPU shader compilation failures, and `QT_QPA_PLATFORM=xcb` / `GDK_BACKEND=x11` make Gazebo use XWayland instead of native Wayland.
 
 ## Create the Robot Model (SDF file)
 
@@ -105,6 +108,7 @@ Two terminals, both inside the distrobox (`distrobox enter mars-rover-ros-two`, 
 
 ```bash
 cd ~/ros2_ws
+source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 ros2 launch my_robot_project sim.launch.py
 ```
@@ -119,10 +123,10 @@ This single command:
 
 ```bash
 cd ~/ros2_ws
+source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 ros2 run my_robot_project my_node
-```
-
+```}]}{
 In Gazebo, select `my_robot` in the Entity tree → right-click → Follow to track.
 
 ## Verify
@@ -135,7 +139,7 @@ ros2 topic echo /model/my_robot/cmd_vel
 
 ## Editing Code
 
-Edit `my_robot_project/my_first_node.py`, then stop (`Ctrl+C`) and re-run the node. No rebuild needed for Python changes.
+Edit `my_robot_project/my_node.py`, then stop (`Ctrl+C`) and re-run the node. No rebuild needed for Python changes.
 
 Rebuild if you modify `setup.py`, `package.xml`, `models/my_robot.sdf`, or add new files:
 
