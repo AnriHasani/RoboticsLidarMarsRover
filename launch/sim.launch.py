@@ -11,12 +11,12 @@ def generate_launch_description():
     models_dir = os.path.join(pkg, 'models')
     env_vars = {
         'GZ_IP': os.environ.get('GZ_IP', '127.0.0.1'),
-        'LIBGL_ALWAYS_SOFTWARE': os.environ.get('LIBGL_ALWAYS_SOFTWARE', '1'),
-        'MESA_GL_VERSION_OVERRIDE': os.environ.get('MESA_GL_VERSION_OVERRIDE', '3.3COMPAT'),
-        'MESA_GLSL_VERSION_OVERRIDE': os.environ.get('MESA_GLSL_VERSION_OVERRIDE', '330'),
         'QT_QPA_PLATFORM': os.environ.get('QT_QPA_PLATFORM', 'xcb'),
         'GDK_BACKEND': os.environ.get('GDK_BACKEND', 'x11'),
         'GZ_SIM_RESOURCE_PATH': models_dir + ':' + os.environ.get('GZ_SIM_RESOURCE_PATH', ''),
+        # NVIDIA GPU Offloading
+        '__NV_PRIME_RENDER_OFFLOAD': '1',
+        '__GLX_VENDOR_LIBRARY_NAME': 'nvidia',
     }
 
     gazebo = ExecuteProcess(
