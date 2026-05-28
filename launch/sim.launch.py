@@ -1,7 +1,7 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import ExecuteProcess, SetEnvironmentVariable, TimerAction
+from launch.actions import ExecuteProcess, SetEnvironmentVariable
 from launch_ros.actions import Node
 
 def generate_launch_description():
@@ -11,7 +11,12 @@ def generate_launch_description():
     models_dir = os.path.join(pkg, 'models')
     env_vars = {
         'GZ_IP': os.environ.get('GZ_IP', '127.0.0.1'),
+        'QT_QPA_PLATFORM': os.environ.get('QT_QPA_PLATFORM', 'xcb'),
+        'GDK_BACKEND': os.environ.get('GDK_BACKEND', 'x11'),
         'GZ_SIM_RESOURCE_PATH': models_dir + ':' + os.environ.get('GZ_SIM_RESOURCE_PATH', ''),
+        # NVIDIA GPU Offloading
+        '__NV_PRIME_RENDER_OFFLOAD': '1',
+        '__GLX_VENDOR_LIBRARY_NAME': 'nvidia',
     }
 
     gazebo = ExecuteProcess(
@@ -24,8 +29,9 @@ def generate_launch_description():
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=[
-            '/model/my_robot/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
-            '/model/my_robot/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry',
+            '/rover/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
+            '/rover/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry',
+            '/rover/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
         ],
         output='screen'
@@ -36,17 +42,4 @@ def generate_launch_description():
         for name, value in env_vars.items()
     ]
 
-    spawn_robot = TimerAction(
-        period=8.0,
-        actions=[
-            ExecuteProcess(
-                cmd=['ros2', 'run', 'ros_gz_sim', 'create',
-                     '-world', 'mars',
-                     '-file', os.path.join(models_dir, 'my_robot.sdf'),
-                     '-name', 'my_robot'],
-                output='screen',
-            )
-        ]
-    )
-
-    return LaunchDescription(env_actions + [gazebo, bridge, spawn_robot])
+    return LaunchDescription(env_actions + [gazebo, bridge])

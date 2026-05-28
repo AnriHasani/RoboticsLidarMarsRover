@@ -32,8 +32,8 @@ setup(
     entry_points={
         'console_scripts': [
             'my_node = my_robot_project.my_node:main',
-            #kalman node
-            'kalman_node = my_robot_project.kalman_filter_node:main',
+            'kalman_filter_node = my_robot_project.kalman_filter_node:main',
+            'navigator_node = my_robot_project.waypoint_navigator:main',
         ],
     },
 )
