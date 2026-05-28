@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="fccf9d07-f17c-4360-b024-95f07c3a200e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="fccf9d07-f17c-4360-b024-95f07c3a200e" name="Changes" comment="feature: kalman filter" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="26" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -20,6 +18,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="dora" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -38,65 +41,6 @@
     <commands />
     <urls />
   </component>
-  <component name="NextEditCompletionFeaturesState">
-    <decayedCancelled>
-      <entry key="MS100" value="1.6797664863204265" />
-      <entry key="MS500" value="3.027205122761522" />
-      <entry key="S2" value="3.7108998586505573" />
-      <entry key="S5" value="4.116755638258679" />
-      <entry key="S10" value="4.93814772104218" />
-      <entry key="S30" value="6.798756928270421" />
-      <entry key="S60" value="7.721173813248473" />
-      <entry key="M2" value="8.307000936273226" />
-      <entry key="M5" value="8.708537916821083" />
-      <entry key="M10" value="8.851762854039013" />
-      <entry key="M15" value="8.900608290116757" />
-      <entry key="M30" value="8.95001811573608" />
-      <entry key="H1" value="8.9749370666454" />
-      <entry key="H2" value="8.98745047462676" />
-      <entry key="H4" value="8.99372071500272" />
-      <entry key="D1" value="8.998952823752392" />
-      <entry key="W1" value="8.999850387986811" />
-    </decayedCancelled>
-    <decayedSelected>
-      <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="0.0" />
-      <entry key="S2" value="0.0" />
-      <entry key="S5" value="0.0" />
-      <entry key="S10" value="0.0" />
-      <entry key="S30" value="0.0" />
-      <entry key="S60" value="0.0" />
-      <entry key="M2" value="0.0" />
-      <entry key="M5" value="0.0" />
-      <entry key="M10" value="0.0" />
-      <entry key="M15" value="0.0" />
-      <entry key="M30" value="0.0" />
-      <entry key="H1" value="0.0" />
-      <entry key="H2" value="0.0" />
-      <entry key="H4" value="0.0" />
-      <entry key="D1" value="0.0" />
-      <entry key="W1" value="0.0" />
-    </decayedSelected>
-    <decayedShown>
-      <entry key="MS100" value="1.6211877315600653" />
-      <entry key="MS500" value="3.0049291622781857" />
-      <entry key="S2" value="3.704121271159177" />
-      <entry key="S5" value="4.1137466972001935" />
-      <entry key="S10" value="4.936151399139497" />
-      <entry key="S30" value="6.797367529456467" />
-      <entry key="S60" value="7.720225108714581" />
-      <entry key="M2" value="8.306435715783865" />
-      <entry key="M5" value="8.70828529774181" />
-      <entry key="M10" value="8.851631664541186" />
-      <entry key="M15" value="8.900519709481598" />
-      <entry key="M30" value="8.949973255534374" />
-      <entry key="H1" value="8.97491449228568" />
-      <entry key="H2" value="8.987439151156448" />
-      <entry key="H4" value="8.993715044166592" />
-      <entry key="D1" value="8.998951877346597" />
-      <entry key="W1" value="8.99985025275494" />
-    </decayedShown>
-  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1,
   &quot;fromUser&quot;: false
@@ -109,13 +53,17 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "dora",
+    "git-widget-placeholder": "lil-anri",
     "last_opened_file_path": "/home/dora/Documents/ML-PROJECT",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
@@ -136,9 +84,22 @@
       <option name="presentableId" value="Default" />
       <updated>1779195996141</updated>
     </task>
+    <task id="LOCAL-00001" summary="feature: kalman filter">
+      <option name="closed" value="true" />
+      <created>1779982860066</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1779982860066</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feature: kalman filter" />
+    <option name="LAST_COMMIT_MESSAGE" value="feature: kalman filter" />
   </component>
 </project>
