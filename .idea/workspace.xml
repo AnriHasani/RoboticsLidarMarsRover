@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="fccf9d07-f17c-4360-b024-95f07c3a200e" name="Changes" comment="feature: kalman filter" />
+    <list default="true" id="fccf9d07-f17c-4360-b024-95f07c3a200e" name="Changes" comment="feature: kalman filter">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/launch/sim.launch.py" beforeDir="false" afterPath="$PROJECT_DIR$/launch/sim.launch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/my_robot_project/kalman_filter_node.py" beforeDir="false" afterPath="$PROJECT_DIR$/my_robot_project/kalman_filter_node.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worlds/mars_world.sdf" beforeDir="false" afterPath="$PROJECT_DIR$/worlds/mars_world.sdf" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -59,7 +68,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "lil-anri",
+    "git-widget-placeholder": "dora",
     "last_opened_file_path": "/home/dora/Documents/ML-PROJECT",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",

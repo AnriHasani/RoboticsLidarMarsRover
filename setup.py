@@ -18,7 +18,7 @@ setup(
         (os.path.join('share', package_name, 'worlds'),
             glob('worlds/*.sdf')),
         (os.path.join('share', package_name, 'models'),
-            glob('models/*.sdf') + glob('models/*.png')),
+            glob('models/*.sdf') + glob('models/*.png') + glob('models/*.obj')),
         (os.path.join('share', package_name, 'models', 'rover'),
             glob('models/rover/*')),
     ],
