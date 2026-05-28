@@ -32,6 +32,7 @@ def generate_launch_description():
             '/rover/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
             '/rover/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry',
             '/rover/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
+            '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
         ],
         output='screen'
