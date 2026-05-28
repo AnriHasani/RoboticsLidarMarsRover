@@ -7,7 +7,6 @@ Project for Elements of Robotics and Automatisation [CIS230.e] made by Anri Hasa
 - [Install ROS 2 Jazzy + Gazebo](#install-ros-2-jazzy--gazebo)
 - [Auto-source ROS 2](#auto-source-ros-2)
 - [Fix Gazebo Transport](#fix-gazebo-transport-required-for-distrobox)
-- [Create the Robot Model](#create-the-robot-model-sdf-file)
 - [Building](#building)
 - [Project Structure](#project-structure)
 - [Running](#running)
@@ -51,23 +50,6 @@ if [ -n "$DISTROBOX_ENTER_PATH" ] || [ -f /.dockerenv ]; then
 fi
 ```
 
-**If your host OS uses fish**
-
-Fish lacks native ROS 2 / colcon support, so switch to bash for ROS work:
-
-```bash
-# From fish, enter bash:
-bash
-```
-
-Or add this to `~/.config/fish/config.fish` to auto-switch:
-
-```fish
-if set -q DISTROBOX_ENTER_PATH; or test -f /.dockerenv
-    exec bash
-end
-```
-
 ## Fix Gazebo Transport (Required for Distrobox)
 
 Add this to `~/.bashrc`:
@@ -79,20 +61,6 @@ export QT_QPA_PLATFORM=xcb
 export GDK_BACKEND=x11
 ```
 
-Gazebo runs inside a container (Docker/Podman) where its transport discovery (UDP multicast) doesn't work and the GPU may not be available for native OpenGL. Forcing `GZ_IP=127.0.0.1` makes GUI and server communicate properly via localhost, `LIBGL_ALWAYS_SOFTWARE=1` helps avoid GPU shader compilation failures, and `QT_QPA_PLATFORM=xcb` / `GDK_BACKEND=x11` make Gazebo use XWayland instead of native Wayland.
-
-## Create the Robot Model (SDF file)
-
-The robot model is defined at `models/my_robot.sdf`. It describes the robot's body, wheels, joints, and the DiffDrive plugin that listens for `/cmd_vel`.
-
-```bash
-mkdir -p ~/ros2_ws/src/my_robot_project/models
-```
-
-Create `models/my_robot.sdf` with a `<model name="my_robot">` containing a body link, two wheel links with revolute joints, and a `gz-sim-diff-drive-system` plugin with `<topic>/model/my_robot/cmd_vel</topic>`.
-
-When your robot changes: Edit `models/my_robot.sdf` (add links, change sizes, add sensors) and rebuild with `colcon build --packages-select my_robot_project`.
-
 ## Building
 
 ```bash
@@ -102,46 +70,48 @@ colcon build --packages-select my_robot_project
 
 ## Running
 
-Two terminals, both inside the distrobox (`distrobox enter mars-rover-ros-two`, then `bash`).
+Three terminals, all inside the distrobox (`distrobox enter mars-rover-ros-two`, then `bash`).
 
-**Terminal 1 — Launch Gazebo + Spawn Robot + Bridge**
+**Terminal 1 — Launch Gazebo + Bridge**
 
 ```bash
 cd ~/ros2_ws
-source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 ros2 launch my_robot_project sim.launch.py
 ```
 
-This single command:
-- Starts Gazebo with an empty world (clock running via `-r`)
-- Waits 8 seconds for Gazebo to fully load
-- Spawns `my_robot` from the model SDF
-- Starts the bridge: `/model/my_robot/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist`
-
-**Terminal 2 — Robot node**
+**Terminal 2 — Kalman Filter Node**
 
 ```bash
 cd ~/ros2_ws
-source /opt/ros/jazzy/setup.bash
 source install/setup.bash
-ros2 run my_robot_project my_node
-```}]}{
-In Gazebo, select `my_robot` in the Entity tree → right-click → Follow to track.
+ros2 run my_robot_project kalman_filter_node
+```
+
+**Terminal 3 — Waypoint Navigator Node**
+
+```bash
+cd ~/ros2_ws
+source install/setup.bash
+ros2 run my_robot_project navigator_node
+```
+
+*Note: Nodes automatically use simulation time, no extra flags required.*
 
 ## Verify
 
 ```bash
 source ~/ros2_ws/install/setup.bash
 ros2 topic list
-ros2 topic echo /model/my_robot/cmd_vel
+ros2 topic echo /kalman_pose  # Check filtered position
+ros2 topic echo /rover/cmd_vel  # Check navigation commands
 ```
 
 ## Editing Code
 
-Edit `my_robot_project/my_node.py`, then stop (`Ctrl+C`) and re-run the node. No rebuild needed for Python changes.
+Edit `my_robot_project/kalman_filter_node.py` or `my_robot_project/waypoint_navigator.py`, then stop (`Ctrl+C`) and re-run the node. No rebuild needed for Python changes.
 
-Rebuild if you modify `setup.py`, `package.xml`, `models/my_robot.sdf`, or add new files:
+Rebuild if you modify `setup.py`, `package.xml`, or add new files:
 
 ```bash
 cd ~/ros2_ws
