@@ -33,6 +33,8 @@ def generate_launch_description():
             '/rover/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry',
             '/rover/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+            #LiDAR scan from Gazebo to ROS for slam_toolbox
+            '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
         ],
         output='screen'
     )

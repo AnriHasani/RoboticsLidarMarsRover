@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fccf9d07-f17c-4360-b024-95f07c3a200e" name="Changes" comment="feature: kalman filter">
+    <list default="true" id="fccf9d07-f17c-4360-b024-95f07c3a200e" name="Changes" comment="feature: kalman entry point">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/launch/sim.launch.py" beforeDir="false" afterPath="$PROJECT_DIR$/launch/sim.launch.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_robot_project/kalman_filter_node.py" beforeDir="false" afterPath="$PROJECT_DIR$/my_robot_project/kalman_filter_node.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/rover/model.sdf" beforeDir="false" afterPath="$PROJECT_DIR$/models/rover/model.sdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/worlds/mars_world.sdf" beforeDir="false" afterPath="$PROJECT_DIR$/worlds/mars_world.sdf" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -17,7 +16,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="26" />
+    <option name="cachedIndexableFilesCount" value="32" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -27,6 +26,7 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="INCOMING_COMMITS_CHECK_STRATEGY" value="FETCH" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$" value="dora" />
@@ -50,6 +50,65 @@
     <commands />
     <urls />
   </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.4061261981781177" />
+      <entry key="MS500" value="1.8350879194283694" />
+      <entry key="S2" value="1.9559453175937422" />
+      <entry key="S5" value="1.9821396328563272" />
+      <entry key="S10" value="1.9914630559350552" />
+      <entry key="S30" value="2.2184109820223035" />
+      <entry key="S60" value="3.074540073677624" />
+      <entry key="M2" value="4.638910391483887" />
+      <entry key="M5" value="7.377554651241018" />
+      <entry key="M10" value="9.207825901362009" />
+      <entry key="M15" value="10.007358733771932" />
+      <entry key="M30" value="10.930599773379699" />
+      <entry key="H1" value="11.44546787784685" />
+      <entry key="H2" value="11.717565364542594" />
+      <entry key="H4" value="11.857463195367263" />
+      <entry key="D1" value="11.976058233853653" />
+      <entry key="W1" value="11.99657517036172" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="0.0" />
+      <entry key="M5" value="0.0" />
+      <entry key="M10" value="0.0" />
+      <entry key="M15" value="0.0" />
+      <entry key="M30" value="0.0" />
+      <entry key="H1" value="0.0" />
+      <entry key="H2" value="0.0" />
+      <entry key="H4" value="0.0" />
+      <entry key="D1" value="0.0" />
+      <entry key="W1" value="0.0" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.358228377873221" />
+      <entry key="MS500" value="1.8224120412514777" />
+      <entry key="S2" value="1.9525588576295776" />
+      <entry key="S5" value="1.9807661944065342" />
+      <entry key="S10" value="1.9907729626494794" />
+      <entry key="S30" value="2.2181505476624044" />
+      <entry key="S60" value="3.074345583134269" />
+      <entry key="M2" value="4.638710108096471" />
+      <entry key="M5" value="7.377347028582348" />
+      <entry key="M10" value="9.207668669185804" />
+      <entry key="M15" value="10.007237296657326" />
+      <entry key="M30" value="10.930529160357006" />
+      <entry key="H1" value="11.445429752413025" />
+      <entry key="H2" value="11.717545549198674" />
+      <entry key="H4" value="11.857453093229717" />
+      <entry key="D1" value="11.976056522603852" />
+      <entry key="W1" value="11.996574925215228" />
+    </decayedShown>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1,
   &quot;fromUser&quot;: false
@@ -69,13 +128,14 @@
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "git-widget-placeholder": "dora",
+    "git.auto.fetch.suggestion.counter": "2",
     "last_opened_file_path": "/home/dora/Documents/ML-PROJECT",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+    "settings.editor.selected.configurable": "ml.llm.AcpAgentsConfigurable"
   }
 }]]></component>
   <component name="SharedIndexes">
@@ -101,14 +161,34 @@
       <option name="project" value="LOCAL" />
       <updated>1779982860066</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="feature: kalman entry point">
+      <option name="closed" value="true" />
+      <created>1779985819007</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1779985819007</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feature: kalman filter" />
-    <option name="LAST_COMMIT_MESSAGE" value="feature: kalman filter" />
+    <MESSAGE value="feature: kalman entry point" />
+    <option name="LAST_COMMIT_MESSAGE" value="feature: kalman entry point" />
   </component>
 </project>

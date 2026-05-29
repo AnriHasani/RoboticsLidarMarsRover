@@ -275,5 +275,83 @@
     <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
       <topic>/rover/joint_states</topic>
     </plugin>
+    <!-- LiDAR sensor link — mounted on top of the rover chassis -->
+    <link name="lidar_link">
+      <!--
+        Pose is relative to the model origin.
+        0 0 1.15 means: centred (0,0) and 1.15m above model origin.
+        The base_link is at z=0.8 and the chassis box is 0.6m tall,
+        so top of chassis is at z=0.8+0.3=1.1m. We place LiDAR at 1.15m.
+      -->
+      <pose>0 0 1.15 0 0 0</pose>
+
+      <inertial>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>0.000041</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>0.000041</iyy><iyz>0</iyz>
+          <izz>0.000080</izz>
+        </inertia>
+      </inertial>
+
+      <visual name="lidar_visual">
+        <geometry>
+          <cylinder><radius>0.05</radius><length>0.07</length></cylinder>
+        </geometry>
+        <material>
+          <ambient>0.1 0.1 0.1 1</ambient>
+          <diffuse>0.1 0.1 0.1 1</diffuse>
+        </material>
+      </visual>
+
+      <collision name="lidar_collision">
+        <geometry>
+          <cylinder><radius>0.05</radius><length>0.07</length></cylinder>
+        </geometry>
+      </collision>
+
+      <sensor name="lidar" type="gpu_lidar">
+        <update_rate>10</update_rate>
+        <always_on>true</always_on>
+        <visualize>true</visualize>
+        <!--
+          Topic name here is the Gazebo-internal topic.
+          The bridge in sim.launch.py translates /scan → ROS /scan.
+          These must match.
+        -->
+        <topic>/scan</topic>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>360</samples>
+              <resolution>1</resolution>
+              <min_angle>-3.14159</min_angle>
+              <max_angle>3.14159</max_angle>
+            </horizontal>
+            <vertical>
+              <samples>1</samples>
+              <min_angle>0</min_angle>
+              <max_angle>0</max_angle>
+            </vertical>
+          </scan>
+          <range>
+            <min>0.15</min>
+            <max>12.0</max>
+            <resolution>0.01</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.015</stddev>
+          </noise>
+        </ray>
+      </sensor>
+    </link>
+
+    <!-- Fixed joint attaching LiDAR to rover chassis -->
+    <joint name="lidar_joint" type="fixed">
+      <parent>base_link</parent>
+      <child>lidar_link</child>
+    </joint>
   </model>
 </sdf>
