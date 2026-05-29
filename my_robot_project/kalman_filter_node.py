@@ -19,6 +19,7 @@ class KalmanFilterNode(Node):
         self.last_time = None
         self.log = []
         self.start_time = self.get_clock().now()
+        self.odom_count = 0
 
         # Subscribers
         self.odom_sub = self.create_subscription(Odometry, '/rover/odometry', self.odom_callback, 10)
@@ -34,6 +35,7 @@ class KalmanFilterNode(Node):
 
     def odom_callback(self, msg):
         """PREDICT step based on odometry motion model."""
+        self.odom_count += 1
         now = self.get_clock().now()
         if self.last_time is None:
             self.last_time = now
@@ -86,6 +88,9 @@ class KalmanFilterNode(Node):
 
     def publish_pose(self):
         """Publishes the current Kalman filter estimate."""
+        if self.odom_count < 5:
+            return
+
         msg = PoseStamped()
         msg.header.stamp = self.get_clock().now().to_msg()
         msg.header.frame_id = 'map'

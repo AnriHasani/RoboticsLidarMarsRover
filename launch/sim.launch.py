@@ -39,9 +39,15 @@ def generate_launch_description():
         output='screen'
     )
 
+    odom_to_tf = Node(
+        package='my_robot_project',
+        executable='odom_to_tf',
+        output='screen',
+    )
+
     env_actions = [
         SetEnvironmentVariable(name=name, value=value)
         for name, value in env_vars.items()
     ]
 
-    return LaunchDescription(env_actions + [gazebo, bridge])
+    return LaunchDescription(env_actions + [gazebo, bridge, odom_to_tf])
