@@ -93,7 +93,8 @@ ros2 run my_robot_project kalman_filter_node
 ```bash
 cd ~/ros2_ws
 source install/setup.bash
-ros2 run my_robot_project navigator_node
+ros2 run my_robot_project pid_navigator
+
 ```
 
 *Note: Nodes automatically use simulation time, no extra flags required.*

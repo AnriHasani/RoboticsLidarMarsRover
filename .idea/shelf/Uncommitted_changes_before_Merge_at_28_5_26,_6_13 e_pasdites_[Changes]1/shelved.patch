@@ -1,0 +1,456 @@
+Index: my_robot_project/kalman_filter_node.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import rclpy\nfrom rclpy.node import Node\nfrom nav_msgs.msg import Odometry\nfrom geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped\nimport numpy as np\nfrom math import atan2\n\nclass KalmanFilterNode(Node):\n    def __init__(self):\n        super().__init__('kalman_filter')\n\n        #state vector\n        #initial position: rover starts at the origin , heading=0 (facing east)\n        self.x=np.array([0.0, 0.0, 0.0])\n\n        #covariance matrix P\n        #initial uncertainty\n        self.P=np.eye(3)*1.0\n\n        #process noise Q\n        #how much we distrust the odometry model\n        #0.01 m² for x/y means ~10cm std dev per step —> realistic for Mars\n        # 0.001 rad² for theta means ~1.8° std dev per step\n        # increasing these if the filter is too slow to respond to SLAM corrections\n        self.Q=np.diag([0.01,0.01,0.001])\n\n        #measurement noise R\n        #how much we distrust the SLAM pose measurements\n        #increasing R if SLAM jumps around ,or decreasing if SLAM is\n        # very accurate and we want the filter to track it closely\n        self.R=np.diag([0.05, 0.05, 0.01])\n\n        #measurement matrix H\n        #maps state [x , y , theta] to the measurements [x , y , theta]\n        #since SLAM measures the exact state variables -> H=identity\n        self.H=np.eye(3)\n\n        #timestamp tracking for dt calculation\n        #dt=time between odometry messages  , used in motion model\n        #converting velocity->position change\n        self.last_time=None\n\n        #data logging for report plots\n        #storing raw odometry and kalman estimation over time\n        self.log=[]\n        self.start_time=self.get_clock().now()\n\n        #Subscribers\n\n        #Odometry-> arrives frequently (-50HZ from diff drive plugin)\n        #this is what drives the PREDICT\n        self.odom_sub=self.create_subscription(\n            '/model/my_robot/odometry',\n            self.odom_callback,\n            10\n        )\n\n        #SLAM pose-> arrives when slam_toolbox has a new estimate (~1-5Hz)\n        #this drives the UPDATE step\n        self.slam_sub=self.create_subscription(\n            PoseWithCovarianceStamped,\n            '/slam_pose',\n            self.slam_callback,\n            10\n        )\n\n        #Publisher\n\n        #we publish PoseStamped -> position + orientation + timestamp\n        #the waypoint navigator will subscribe to this\n        self.pose_pub=self.create_publisher(\n            PoseStamped,\n            '/kalman_pose',\n            10\n        )\n\n        #timer-> log and publish at 10Hz regardless of message rates\n        self.create_timer(0.1, self.publish_pose)\n\n        self.get_logger().info('Kalman Filter node started')\n        self.get_logger().info(f'Q (process noise):\\n{self.Q}')\n        self.get_logger().info(f'R (measurement noise):\\n{self.R}')\n\n        #Predict step\n\n        def odom_callback(msg):\n            \"\"\"\n             Called every time a new odometry message arrives.\n        This implements the PREDICT step of the Kalman filter.\n\n        We extract linear and angular velocity from the message,\n        compute how much the rover moved in dt seconds,\n        and update the state estimate and covariance.\n\n        The motion model for a differential drive robot:\n          x_new = x + v * cos(theta) * dt\n          y_new = y + v * sin(theta) * dt\n          theta_new = theta + omega * dt\n\n            \"\"\"\n\n            #compute dt\n            now = self.get_clock().now()\n            if self.last_time is None:\n                self.last_time = now\n                return  # skip first message\n            dt = (now - self.last_time).nanoseconds / 1e9  # convert ns → seconds\n            self.last_time = now\n\n            # Skip if dt is too large (node paused or just started)\n            # A dt > 1 second means something is wrong — ignore it\n            if dt <= 0 or dt > 1.0:\n                return\n\n                # ── Extract velocities from odometry message ──────────────────────────\n                # twist.twist.linear.x = forward velocity in m/s\n                # twist.twist.angular.z = rotation rate in rad/s (positive = left turn)\n                v = msg.twist.twist.linear.x  # linear velocity\n                omega = msg.twist.twist.angular.z  # angular velocity\n\n                # ── Current state ─────────────────────────────────────────────────────\n                x, y, theta = self.x\n\n                # ── Motion model — predict new state ─────────────────────────────────\n                # This is the f(x, u) function: given current state and control input,\n                # predict next state. For differential drive:\n                x_new = x + v * np.cos(theta) * dt\n                y_new = y + v * np.sin(theta) * dt\n                theta_new = theta + omega * dt\n\n                # Normalise theta to [-π, π] — angles wrap around\n                # Without this, theta could grow to 100π after many rotations\n                theta_new = atan2(np.sin(theta_new), np.cos(theta_new))\n\n                # ── State transition matrix F ─────────────────────────────────────────\n                # F is the Jacobian of the motion model — how each state variable\n                # affects the others after one step.\n                # For our motion model:\n                #   dx/dx=1, dx/dy=0, dx/dtheta = -v*sin(theta)*dt\n                #   dy/dx=0, dy/dy=1, dy/dtheta =  v*cos(theta)*dt\n                #   dtheta/dx=0, dtheta/dy=0, dtheta/dtheta=1\n                F = np.array([\n                    [1, 0, -v * np.sin(theta) * dt],\n                    [0, 1, v * np.cos(theta) * dt],\n                    [0, 0, 1]\n                ])\n\n                # ── Update state and covariance ───────────────────────────────────────\n                self.x = np.array([x_new, y_new, theta_new])\n\n                # P grows each predict step — we become more uncertain over time\n                # because odometry drifts. Q adds the expected process noise.\n                self.P = F @ self.P @ F.T + self.Q\n\n                # ── Log for plotting ──────────────────────────────────────────────────\n                # Raw odometry position (from the message directly, not our estimate)\n                odom_x = msg.pose.pose.position.x\n                odom_y = msg.pose.pose.position.y\n                t = (now - self.start_time).nanoseconds / 1e9\n                self.log.append([t, odom_x, odom_y, self.x[0], self.x[1]])\n\n            # ── UPDATE STEP ──────────────────────────────────────────────────────────\n\n            def slam_callback(self, msg):\n                \"\"\"\n                Called every time slam_toolbox publishes a new pose estimate.\n                This implements the UPDATE step of the Kalman filter.\n\n                We extract the SLAM position [x, y, theta] as measurement z,\n                compute the Kalman Gain K, and correct our prediction.\n\n                The bigger K is, the more we trust this measurement over our prediction.\n                K is computed from P (our uncertainty) and R (sensor uncertainty).\n                \"\"\"\n                # ── Extract measurement z from SLAM pose ──────────────────────────────\n                slam_x = msg.pose.pose.position.x\n                slam_y = msg.pose.pose.position.y\n\n                # Convert quaternion → yaw angle\n                # ROS uses quaternions for orientation (4 numbers: x, y, z, w)\n                # We only care about yaw (rotation around vertical Z axis)\n                # This formula extracts yaw from the quaternion:\n                qx = msg.pose.pose.orientation.x\n                qy = msg.pose.pose.orientation.y\n                qz = msg.pose.pose.orientation.z\n                qw = msg.pose.pose.orientation.w\n                slam_theta = atan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz))\n\n                z = np.array([slam_x, slam_y, slam_theta])\n\n                # ── Innovation: difference between measurement and prediction ─────────\n                # This is \"what did I expect vs what did I actually measure\"\n                # If innovation is small → prediction was good → small correction\n                # If innovation is large → odometry drifted → large correction\n                innovation = z - self.H @ self.x\n\n                # Normalise the theta component of innovation — angles wrap around\n                innovation[2] = atan2(np.sin(innovation[2]), np.cos(innovation[2]))\n\n                # ── Innovation covariance S ───────────────────────────────────────────\n                # Combines our prediction uncertainty (P) with sensor noise (R)\n                # Used to compute the Kalman Gain\n                S = self.H @ self.P @ self.H.T + self.R\n\n                # ── Kalman Gain K ─────────────────────────────────────────────────────\n                # K tells us how much to weight the measurement vs the prediction\n                # K = P*H^T * S^-1\n                # np.linalg.inv() computes matrix inverse\n                K = self.P @ self.H.T @ np.linalg.inv(S)\n\n                # ── Corrected state estimate ──────────────────────────────────────────\n                # Move our estimate toward the measurement, weighted by K\n                self.x = self.x + K @ innovation\n\n                # Normalise theta again after update\n                self.x[2] = atan2(np.sin(self.x[2]), np.cos(self.x[2]))\n\n                # ── Updated covariance ────────────────────────────────────────────────\n                # P shrinks after a measurement — we're more certain now\n                # (I - K*H) is the shrink factor\n                self.P = (self.I - K @ self.H) @ self.P\n\n                self.get_logger().info(\n                    f'KF updated | SLAM: ({slam_x:.3f}, {slam_y:.3f}) | '\n                    f'KF: ({self.x[0]:.3f}, {self.x[1]:.3f}) | '\n                    f'P trace: {np.trace(self.P):.4f}'\n                )\n\n            #Publish\n\n            def publish_pose(self):\n                \"\"\"\n                Publishes the current Kalman filter estimate as a PoseStamped.\n                Called at 10Hz by the timer — independent of message arrival rates.\n                This is what the waypoint navigator will subscribe to.\n                \"\"\"\n                msg = PoseStamped()\n                msg.header.stamp = self.get_clock().now().to_msg()\n                msg.header.frame_id = 'map'  # pose is in the map coordinate frame\n\n                msg.pose.position.x = float(self.x[0])\n                msg.pose.position.y = float(self.x[1])\n                msg.pose.position.z = 0.0\n\n                # Convert yaw angle back to quaternion for ROS message format\n                # For a yaw-only rotation: qx=0, qy=0, qz=sin(theta/2), qw=cos(theta/2)\n                msg.pose.orientation.x = 0.0\n                msg.pose.orientation.y = 0.0\n                msg.pose.orientation.z = float(np.sin(self.x[2] / 2))\n                msg.pose.orientation.w = float(np.cos(self.x[2] / 2))\n\n                self.pose_pub.publish(msg)\n\n            def save_log(self):\n                \"\"\"\n                Saves logged data to CSV for report plots.\n                Call this before shutting down, or add a ROS service call to trigger it.\n                Format: time, odom_x, odom_y, kalman_x, kalman_y\n                \"\"\"\n                import csv\n                with open('/tmp/kalman_log.csv', 'w', newline='') as f:\n                    writer = csv.writer(f)\n                    writer.writerow(['time', 'odom_x', 'odom_y', 'kalman_x', 'kalman_y'])\n                    writer.writerows(self.log)\n                self.get_logger().info('Log saved to /tmp/kalman_log.csv')\n\n        def main(args=None):\n            rclpy.init(args=args)\n            node = KalmanFilterNode()\n            try:\n                rclpy.spin(node)\n            except KeyboardInterrupt:\n                node.save_log()  # save data for plotting on Ctrl+C\n            finally:\n                node.destroy_node()\n                rclpy.shutdown()\n\n        if __name__ == '__main__':\n            main()\n\n\n\n\n\n\n\n\n\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/my_robot_project/kalman_filter_node.py b/my_robot_project/kalman_filter_node.py
+--- a/my_robot_project/kalman_filter_node.py	(revision f53470287be009734cc2a524c3762921e490a843)
++++ b/my_robot_project/kalman_filter_node.py	(date 1779984827432)
+@@ -5,285 +5,146 @@
+ import numpy as np
+ from math import atan2
+ 
++
+ class KalmanFilterNode(Node):
+     def __init__(self):
+         super().__init__('kalman_filter')
+ 
+-        #state vector
+-        #initial position: rover starts at the origin , heading=0 (facing east)
+-        self.x=np.array([0.0, 0.0, 0.0])
+-
+-        #covariance matrix P
+-        #initial uncertainty
+-        self.P=np.eye(3)*1.0
+-
+-        #process noise Q
+-        #how much we distrust the odometry model
+-        #0.01 m² for x/y means ~10cm std dev per step —> realistic for Mars
+-        # 0.001 rad² for theta means ~1.8° std dev per step
+-        # increasing these if the filter is too slow to respond to SLAM corrections
+-        self.Q=np.diag([0.01,0.01,0.001])
+-
+-        #measurement noise R
+-        #how much we distrust the SLAM pose measurements
+-        #increasing R if SLAM jumps around ,or decreasing if SLAM is
+-        # very accurate and we want the filter to track it closely
+-        self.R=np.diag([0.05, 0.05, 0.01])
+-
+-        #measurement matrix H
+-        #maps state [x , y , theta] to the measurements [x , y , theta]
+-        #since SLAM measures the exact state variables -> H=identity
+-        self.H=np.eye(3)
++        self.x = np.array([0.0, 0.0, 0.0])
++        self.P = np.eye(3) * 1.0
++        self.Q = np.diag([0.01, 0.01, 0.001])
++        self.R = np.diag([0.05, 0.05, 0.01])
++        self.H = np.eye(3)
++        self.I = np.eye(3)
+ 
+-        #timestamp tracking for dt calculation
+-        #dt=time between odometry messages  , used in motion model
+-        #converting velocity->position change
+-        self.last_time=None
+-
+-        #data logging for report plots
+-        #storing raw odometry and kalman estimation over time
+-        self.log=[]
+-        self.start_time=self.get_clock().now()
++        self.last_time = None
++        self.log = []
++        self.start_time = self.get_clock().now()
+ 
+-        #Subscribers
+-
+-        #Odometry-> arrives frequently (-50HZ from diff drive plugin)
+-        #this is what drives the PREDICT
+-        self.odom_sub=self.create_subscription(
++        self.odom_sub = self.create_subscription(
++            Odometry,
+             '/model/my_robot/odometry',
+             self.odom_callback,
+             10
+         )
+ 
+-        #SLAM pose-> arrives when slam_toolbox has a new estimate (~1-5Hz)
+-        #this drives the UPDATE step
+-        self.slam_sub=self.create_subscription(
++        self.slam_sub = self.create_subscription(
+             PoseWithCovarianceStamped,
+             '/slam_pose',
+             self.slam_callback,
+             10
+         )
+ 
+-        #Publisher
+-
+-        #we publish PoseStamped -> position + orientation + timestamp
+-        #the waypoint navigator will subscribe to this
+-        self.pose_pub=self.create_publisher(
++        self.pose_pub = self.create_publisher(
+             PoseStamped,
+             '/kalman_pose',
+             10
+         )
+ 
+-        #timer-> log and publish at 10Hz regardless of message rates
+         self.create_timer(0.1, self.publish_pose)
+ 
+         self.get_logger().info('Kalman Filter node started')
+         self.get_logger().info(f'Q (process noise):\n{self.Q}')
+         self.get_logger().info(f'R (measurement noise):\n{self.R}')
+ 
+-        #Predict step
+-
+-        def odom_callback(msg):
+-            """
+-             Called every time a new odometry message arrives.
+-        This implements the PREDICT step of the Kalman filter.
+-
+-        We extract linear and angular velocity from the message,
+-        compute how much the rover moved in dt seconds,
+-        and update the state estimate and covariance.
+-
+-        The motion model for a differential drive robot:
+-          x_new = x + v * cos(theta) * dt
+-          y_new = y + v * sin(theta) * dt
+-          theta_new = theta + omega * dt
+-
+-            """
+-
+-            #compute dt
+-            now = self.get_clock().now()
+-            if self.last_time is None:
+-                self.last_time = now
+-                return  # skip first message
+-            dt = (now - self.last_time).nanoseconds / 1e9  # convert ns → seconds
+-            self.last_time = now
++    def odom_callback(self, msg):
++        now = self.get_clock().now()
++        if self.last_time is None:
++            self.last_time = now
++            return
++        dt = (now - self.last_time).nanoseconds / 1e9
++        self.last_time = now
+ 
+-            # Skip if dt is too large (node paused or just started)
+-            # A dt > 1 second means something is wrong — ignore it
+-            if dt <= 0 or dt > 1.0:
+-                return
++        if dt <= 0 or dt > 1.0:
++            return
+ 
+-                # ── Extract velocities from odometry message ──────────────────────────
+-                # twist.twist.linear.x = forward velocity in m/s
+-                # twist.twist.angular.z = rotation rate in rad/s (positive = left turn)
+-                v = msg.twist.twist.linear.x  # linear velocity
+-                omega = msg.twist.twist.angular.z  # angular velocity
+-
+-                # ── Current state ─────────────────────────────────────────────────────
+-                x, y, theta = self.x
++        v = msg.twist.twist.linear.x
++        omega = msg.twist.twist.angular.z
++        x, y, theta = self.x
+ 
+-                # ── Motion model — predict new state ─────────────────────────────────
+-                # This is the f(x, u) function: given current state and control input,
+-                # predict next state. For differential drive:
+-                x_new = x + v * np.cos(theta) * dt
+-                y_new = y + v * np.sin(theta) * dt
+-                theta_new = theta + omega * dt
++        x_new = x + v * np.cos(theta) * dt
++        y_new = y + v * np.sin(theta) * dt
++        theta_new = theta + omega * dt
+ 
+-                # Normalise theta to [-π, π] — angles wrap around
+-                # Without this, theta could grow to 100π after many rotations
+-                theta_new = atan2(np.sin(theta_new), np.cos(theta_new))
++        theta_new = atan2(np.sin(theta_new), np.cos(theta_new))
+ 
+-                # ── State transition matrix F ─────────────────────────────────────────
+-                # F is the Jacobian of the motion model — how each state variable
+-                # affects the others after one step.
+-                # For our motion model:
+-                #   dx/dx=1, dx/dy=0, dx/dtheta = -v*sin(theta)*dt
+-                #   dy/dx=0, dy/dy=1, dy/dtheta =  v*cos(theta)*dt
+-                #   dtheta/dx=0, dtheta/dy=0, dtheta/dtheta=1
+-                F = np.array([
+-                    [1, 0, -v * np.sin(theta) * dt],
+-                    [0, 1, v * np.cos(theta) * dt],
+-                    [0, 0, 1]
+-                ])
++        F = np.array([
++            [1, 0, -v * np.sin(theta) * dt],
++            [0, 1, v * np.cos(theta) * dt],
++            [0, 0, 1]
++        ])
+ 
+-                # ── Update state and covariance ───────────────────────────────────────
+-                self.x = np.array([x_new, y_new, theta_new])
+-
+-                # P grows each predict step — we become more uncertain over time
+-                # because odometry drifts. Q adds the expected process noise.
+-                self.P = F @ self.P @ F.T + self.Q
++        self.x = np.array([x_new, y_new, theta_new])
++        self.P = F @ self.P @ F.T + self.Q
+ 
+-                # ── Log for plotting ──────────────────────────────────────────────────
+-                # Raw odometry position (from the message directly, not our estimate)
+-                odom_x = msg.pose.pose.position.x
+-                odom_y = msg.pose.pose.position.y
+-                t = (now - self.start_time).nanoseconds / 1e9
+-                self.log.append([t, odom_x, odom_y, self.x[0], self.x[1]])
++        odom_x = msg.pose.pose.position.x
++        odom_y = msg.pose.pose.position.y
++        t = (now - self.start_time).nanoseconds / 1e9
++        self.log.append([t, odom_x, odom_y, self.x[0], self.x[1]])
+ 
+-            # ── UPDATE STEP ──────────────────────────────────────────────────────────
+-
+-            def slam_callback(self, msg):
+-                """
+-                Called every time slam_toolbox publishes a new pose estimate.
+-                This implements the UPDATE step of the Kalman filter.
+-
+-                We extract the SLAM position [x, y, theta] as measurement z,
+-                compute the Kalman Gain K, and correct our prediction.
+-
+-                The bigger K is, the more we trust this measurement over our prediction.
+-                K is computed from P (our uncertainty) and R (sensor uncertainty).
+-                """
+-                # ── Extract measurement z from SLAM pose ──────────────────────────────
+-                slam_x = msg.pose.pose.position.x
+-                slam_y = msg.pose.pose.position.y
+-
+-                # Convert quaternion → yaw angle
+-                # ROS uses quaternions for orientation (4 numbers: x, y, z, w)
+-                # We only care about yaw (rotation around vertical Z axis)
+-                # This formula extracts yaw from the quaternion:
+-                qx = msg.pose.pose.orientation.x
+-                qy = msg.pose.pose.orientation.y
+-                qz = msg.pose.pose.orientation.z
+-                qw = msg.pose.pose.orientation.w
+-                slam_theta = atan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz))
++    def slam_callback(self, msg):
++        slam_x = msg.pose.pose.position.x
++        slam_y = msg.pose.pose.position.y
++        qx = msg.pose.pose.orientation.x
++        qy = msg.pose.pose.orientation.y
++        qz = msg.pose.pose.orientation.z
++        qw = msg.pose.pose.orientation.w
++        slam_theta = atan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz))
+ 
+-                z = np.array([slam_x, slam_y, slam_theta])
++        z = np.array([slam_x, slam_y, slam_theta])
+ 
+-                # ── Innovation: difference between measurement and prediction ─────────
+-                # This is "what did I expect vs what did I actually measure"
+-                # If innovation is small → prediction was good → small correction
+-                # If innovation is large → odometry drifted → large correction
+-                innovation = z - self.H @ self.x
+-
+-                # Normalise the theta component of innovation — angles wrap around
+-                innovation[2] = atan2(np.sin(innovation[2]), np.cos(innovation[2]))
++        innovation = z - self.H @ self.x
++        innovation[2] = atan2(np.sin(innovation[2]), np.cos(innovation[2]))
+ 
+-                # ── Innovation covariance S ───────────────────────────────────────────
+-                # Combines our prediction uncertainty (P) with sensor noise (R)
+-                # Used to compute the Kalman Gain
+-                S = self.H @ self.P @ self.H.T + self.R
+-
+-                # ── Kalman Gain K ─────────────────────────────────────────────────────
+-                # K tells us how much to weight the measurement vs the prediction
+-                # K = P*H^T * S^-1
+-                # np.linalg.inv() computes matrix inverse
+-                K = self.P @ self.H.T @ np.linalg.inv(S)
++        S = self.H @ self.P @ self.H.T + self.R
++        K = self.P @ self.H.T @ np.linalg.inv(S)
+ 
+-                # ── Corrected state estimate ──────────────────────────────────────────
+-                # Move our estimate toward the measurement, weighted by K
+-                self.x = self.x + K @ innovation
+-
+-                # Normalise theta again after update
+-                self.x[2] = atan2(np.sin(self.x[2]), np.cos(self.x[2]))
+-
+-                # ── Updated covariance ────────────────────────────────────────────────
+-                # P shrinks after a measurement — we're more certain now
+-                # (I - K*H) is the shrink factor
+-                self.P = (self.I - K @ self.H) @ self.P
++        self.x = self.x + K @ innovation
++        self.x[2] = atan2(np.sin(self.x[2]), np.cos(self.x[2]))
++        self.P = (self.I - K @ self.H) @ self.P
+ 
+-                self.get_logger().info(
+-                    f'KF updated | SLAM: ({slam_x:.3f}, {slam_y:.3f}) | '
+-                    f'KF: ({self.x[0]:.3f}, {self.x[1]:.3f}) | '
+-                    f'P trace: {np.trace(self.P):.4f}'
+-                )
++        self.get_logger().info(
++            f'KF updated | SLAM: ({slam_x:.3f}, {slam_y:.3f}) | '
++            f'KF: ({self.x[0]:.3f}, {self.x[1]:.3f}) | '
++            f'P trace: {np.trace(self.P):.4f}'
++        )
+ 
+-            #Publish
+-
+-            def publish_pose(self):
+-                """
+-                Publishes the current Kalman filter estimate as a PoseStamped.
+-                Called at 10Hz by the timer — independent of message arrival rates.
+-                This is what the waypoint navigator will subscribe to.
+-                """
+-                msg = PoseStamped()
+-                msg.header.stamp = self.get_clock().now().to_msg()
+-                msg.header.frame_id = 'map'  # pose is in the map coordinate frame
++    def publish_pose(self):
++        msg = PoseStamped()
++        msg.header.stamp = self.get_clock().now().to_msg()
++        msg.header.frame_id = 'map'
+ 
+-                msg.pose.position.x = float(self.x[0])
+-                msg.pose.position.y = float(self.x[1])
+-                msg.pose.position.z = 0.0
++        msg.pose.position.x = float(self.x[0])
++        msg.pose.position.y = float(self.x[1])
++        msg.pose.position.z = 0.0
+ 
+-                # Convert yaw angle back to quaternion for ROS message format
+-                # For a yaw-only rotation: qx=0, qy=0, qz=sin(theta/2), qw=cos(theta/2)
+-                msg.pose.orientation.x = 0.0
+-                msg.pose.orientation.y = 0.0
+-                msg.pose.orientation.z = float(np.sin(self.x[2] / 2))
+-                msg.pose.orientation.w = float(np.cos(self.x[2] / 2))
++        msg.pose.orientation.x = 0.0
++        msg.pose.orientation.y = 0.0
++        msg.pose.orientation.z = float(np.sin(self.x[2] / 2))
++        msg.pose.orientation.w = float(np.cos(self.x[2] / 2))
+ 
+-                self.pose_pub.publish(msg)
++        self.pose_pub.publish(msg)
+ 
+-            def save_log(self):
+-                """
+-                Saves logged data to CSV for report plots.
+-                Call this before shutting down, or add a ROS service call to trigger it.
+-                Format: time, odom_x, odom_y, kalman_x, kalman_y
+-                """
+-                import csv
+-                with open('/tmp/kalman_log.csv', 'w', newline='') as f:
+-                    writer = csv.writer(f)
+-                    writer.writerow(['time', 'odom_x', 'odom_y', 'kalman_x', 'kalman_y'])
+-                    writer.writerows(self.log)
+-                self.get_logger().info('Log saved to /tmp/kalman_log.csv')
++    def save_log(self):
++        import csv
++        with open('/tmp/kalman_log.csv', 'w', newline='') as f:
++            writer = csv.writer(f)
++            writer.writerow(['time', 'odom_x', 'odom_y', 'kalman_x', 'kalman_y'])
++            writer.writerows(self.log)
++        self.get_logger().info('Log saved to /tmp/kalman_log.csv')
+ 
+-        def main(args=None):
+-            rclpy.init(args=args)
+-            node = KalmanFilterNode()
+-            try:
+-                rclpy.spin(node)
+-            except KeyboardInterrupt:
+-                node.save_log()  # save data for plotting on Ctrl+C
+-            finally:
+-                node.destroy_node()
+-                rclpy.shutdown()
++
++def main(args=None):
++    rclpy.init(args=args)
++    node = KalmanFilterNode()
++    try:
++        rclpy.spin(node)
++    except KeyboardInterrupt:
++        node.save_log()
++    finally:
++        node.destroy_node()
++        rclpy.shutdown()
+ 
+-        if __name__ == '__main__':
+-            main()
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
++
++if __name__ == '__main__':
++    main()
+Index: launch/sim.launch.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import os\nfrom ament_index_python.packages import get_package_share_directory\nfrom launch import LaunchDescription\nfrom launch.actions import ExecuteProcess, SetEnvironmentVariable\nfrom launch_ros.actions import Node\n\ndef generate_launch_description():\n    pkg = get_package_share_directory('my_robot_project')\n    world = os.path.join(pkg, 'worlds', 'mars_world.sdf')\n\n    models_dir = os.path.join(pkg, 'models')\n    env_vars = {\n        'GZ_IP': os.environ.get('GZ_IP', '127.0.0.1'),\n        'LIBGL_ALWAYS_SOFTWARE': os.environ.get('LIBGL_ALWAYS_SOFTWARE', '1'),\n        'MESA_GL_VERSION_OVERRIDE': os.environ.get('MESA_GL_VERSION_OVERRIDE', '3.3COMPAT'),\n        'MESA_GLSL_VERSION_OVERRIDE': os.environ.get('MESA_GLSL_VERSION_OVERRIDE', '330'),\n        'QT_QPA_PLATFORM': os.environ.get('QT_QPA_PLATFORM', 'xcb'),\n        'GDK_BACKEND': os.environ.get('GDK_BACKEND', 'x11'),\n        'GZ_SIM_RESOURCE_PATH': models_dir + ':' + os.environ.get('GZ_SIM_RESOURCE_PATH', ''),\n    }\n\n    gazebo = ExecuteProcess(\n        cmd=['gz', 'sim', '-r', world],\n        output='screen',\n        additional_env=env_vars,\n    )\n\n    bridge = Node(\n        package='ros_gz_bridge',\n        executable='parameter_bridge',\n        arguments=[\n            '/rover/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',\n            '/rover/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry',\n            '/rover/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',\n            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',\n        ],\n        output='screen'\n    )\n\n    env_actions = [\n        SetEnvironmentVariable(name=name, value=value)\n        for name, value in env_vars.items()\n    ]\n\n    return LaunchDescription(env_actions + [gazebo, bridge])\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/launch/sim.launch.py b/launch/sim.launch.py
+--- a/launch/sim.launch.py	(revision f53470287be009734cc2a524c3762921e490a843)
++++ b/launch/sim.launch.py	(date 1779984827432)
+@@ -1,21 +1,16 @@
+ import os
+ from ament_index_python.packages import get_package_share_directory
+ from launch import LaunchDescription
+-from launch.actions import ExecuteProcess, SetEnvironmentVariable
++from launch.actions import ExecuteProcess, SetEnvironmentVariable, TimerAction
+ from launch_ros.actions import Node
+ 
+ def generate_launch_description():
+     pkg = get_package_share_directory('my_robot_project')
+-    world = os.path.join(pkg, 'worlds', 'mars_world.sdf')
++    world = 'empty.sdf'
+ 
+     models_dir = os.path.join(pkg, 'models')
+     env_vars = {
+         'GZ_IP': os.environ.get('GZ_IP', '127.0.0.1'),
+-        'LIBGL_ALWAYS_SOFTWARE': os.environ.get('LIBGL_ALWAYS_SOFTWARE', '1'),
+-        'MESA_GL_VERSION_OVERRIDE': os.environ.get('MESA_GL_VERSION_OVERRIDE', '3.3COMPAT'),
+-        'MESA_GLSL_VERSION_OVERRIDE': os.environ.get('MESA_GLSL_VERSION_OVERRIDE', '330'),
+-        'QT_QPA_PLATFORM': os.environ.get('QT_QPA_PLATFORM', 'xcb'),
+-        'GDK_BACKEND': os.environ.get('GDK_BACKEND', 'x11'),
+         'GZ_SIM_RESOURCE_PATH': models_dir + ':' + os.environ.get('GZ_SIM_RESOURCE_PATH', ''),
+     }
+ 
+@@ -29,9 +24,8 @@
+         package='ros_gz_bridge',
+         executable='parameter_bridge',
+         arguments=[
+-            '/rover/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
+-            '/rover/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry',
+-            '/rover/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
++            '/model/my_robot/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
++            '/model/my_robot/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry',
+             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+         ],
+         output='screen'
+@@ -42,4 +36,17 @@
+         for name, value in env_vars.items()
+     ]
+ 
+-    return LaunchDescription(env_actions + [gazebo, bridge])
++    spawn_robot = TimerAction(
++        period=8.0,
++        actions=[
++            ExecuteProcess(
++                cmd=['ros2', 'run', 'ros_gz_sim', 'create',
++                     '-world', 'empty',
++                     '-file', os.path.join(models_dir, 'my_robot.sdf'),
++                     '-name', 'my_robot'],
++                output='screen',
++            )
++        ]
++    )
++
++    return LaunchDescription(env_actions + [gazebo, bridge, spawn_robot])

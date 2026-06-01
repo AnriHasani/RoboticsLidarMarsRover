@@ -32,10 +32,17 @@ def generate_launch_description():
             '/rover/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
             '/rover/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry',
             '/rover/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
-            '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+            #LiDAR scan from Gazebo to ROS for slam_toolbox
+            '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
         ],
         output='screen'
+    )
+
+    odom_to_tf = Node(
+        package='my_robot_project',
+        executable='odom_to_tf',
+        output='screen',
     )
 
     env_actions = [
@@ -43,4 +50,4 @@ def generate_launch_description():
         for name, value in env_vars.items()
     ]
 
-    return LaunchDescription(env_actions + [gazebo, bridge])
+    return LaunchDescription(env_actions + [gazebo, bridge, odom_to_tf])

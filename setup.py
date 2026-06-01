@@ -34,6 +34,8 @@ setup(
             'my_node = my_robot_project.my_node:main',
             'kalman_filter_node = my_robot_project.kalman_filter_node:main',
             'navigator_node = my_robot_project.waypoint_navigator:main',
+            'pid_navigator = my_robot_project.pid_controller:main',
+            'odom_to_tf = my_robot_project.odom_to_tf:main',
         ],
     },
 )
