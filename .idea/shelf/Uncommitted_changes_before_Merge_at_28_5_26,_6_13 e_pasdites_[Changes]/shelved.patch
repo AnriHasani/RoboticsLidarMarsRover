@@ -1,0 +1,137 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"fccf9d07-f17c-4360-b024-95f07c3a200e\" name=\"Changes\" comment=\"\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"Python Script\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"GitHubPullRequestSearchHistory\">{\n  &quot;lastFilter&quot;: {\n    &quot;state&quot;: &quot;OPEN&quot;,\n    &quot;assignee&quot;: &quot;Dora12-create&quot;\n  }\n}</component>\n  <component name=\"GithubPullRequestsUISettings\">{\n  &quot;selectedUrlAndAccountId&quot;: {\n    &quot;url&quot;: &quot;https://github.com/AnriHasani/RoboticsLidarMarsRover.git&quot;,\n    &quot;accountId&quot;: &quot;6f68edec-cb67-4a3f-b156-b49a27d31130&quot;\n  }\n}</component>\n  <component name=\"McpProjectServerCommands\">\n    <commands />\n    <urls />\n  </component>\n  <component name=\"NextEditCompletionFeaturesState\">\n    <decayedCancelled>\n      <entry key=\"MS100\" value=\"1.6797664863204265\" />\n      <entry key=\"MS500\" value=\"3.027205122761522\" />\n      <entry key=\"S2\" value=\"3.7108998586505573\" />\n      <entry key=\"S5\" value=\"4.116755638258679\" />\n      <entry key=\"S10\" value=\"4.93814772104218\" />\n      <entry key=\"S30\" value=\"6.798756928270421\" />\n      <entry key=\"S60\" value=\"7.721173813248473\" />\n      <entry key=\"M2\" value=\"8.307000936273226\" />\n      <entry key=\"M5\" value=\"8.708537916821083\" />\n      <entry key=\"M10\" value=\"8.851762854039013\" />\n      <entry key=\"M15\" value=\"8.900608290116757\" />\n      <entry key=\"M30\" value=\"8.95001811573608\" />\n      <entry key=\"H1\" value=\"8.9749370666454\" />\n      <entry key=\"H2\" value=\"8.98745047462676\" />\n      <entry key=\"H4\" value=\"8.99372071500272\" />\n      <entry key=\"D1\" value=\"8.998952823752392\" />\n      <entry key=\"W1\" value=\"8.999850387986811\" />\n    </decayedCancelled>\n    <decayedSelected>\n      <entry key=\"MS100\" value=\"0.0\" />\n      <entry key=\"MS500\" value=\"0.0\" />\n      <entry key=\"S2\" value=\"0.0\" />\n      <entry key=\"S5\" value=\"0.0\" />\n      <entry key=\"S10\" value=\"0.0\" />\n      <entry key=\"S30\" value=\"0.0\" />\n      <entry key=\"S60\" value=\"0.0\" />\n      <entry key=\"M2\" value=\"0.0\" />\n      <entry key=\"M5\" value=\"0.0\" />\n      <entry key=\"M10\" value=\"0.0\" />\n      <entry key=\"M15\" value=\"0.0\" />\n      <entry key=\"M30\" value=\"0.0\" />\n      <entry key=\"H1\" value=\"0.0\" />\n      <entry key=\"H2\" value=\"0.0\" />\n      <entry key=\"H4\" value=\"0.0\" />\n      <entry key=\"D1\" value=\"0.0\" />\n      <entry key=\"W1\" value=\"0.0\" />\n    </decayedSelected>\n    <decayedShown>\n      <entry key=\"MS100\" value=\"1.6211877315600653\" />\n      <entry key=\"MS500\" value=\"3.0049291622781857\" />\n      <entry key=\"S2\" value=\"3.704121271159177\" />\n      <entry key=\"S5\" value=\"4.1137466972001935\" />\n      <entry key=\"S10\" value=\"4.936151399139497\" />\n      <entry key=\"S30\" value=\"6.797367529456467\" />\n      <entry key=\"S60\" value=\"7.720225108714581\" />\n      <entry key=\"M2\" value=\"8.306435715783865\" />\n      <entry key=\"M5\" value=\"8.70828529774181\" />\n      <entry key=\"M10\" value=\"8.851631664541186\" />\n      <entry key=\"M15\" value=\"8.900519709481598\" />\n      <entry key=\"M30\" value=\"8.949973255534374\" />\n      <entry key=\"H1\" value=\"8.97491449228568\" />\n      <entry key=\"H2\" value=\"8.987439151156448\" />\n      <entry key=\"H4\" value=\"8.993715044166592\" />\n      <entry key=\"D1\" value=\"8.998951877346597\" />\n      <entry key=\"W1\" value=\"8.99985025275494\" />\n    </decayedShown>\n  </component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 1,\n  &quot;fromUser&quot;: false\n}</component>\n  <component name=\"ProjectId\" id=\"3DwbI2uy3mMMszUCme15eF8eNnF\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"ModuleVcsDetector.initialDetectionPerformed\": \"true\",\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252\": \"true\",\n    \"RunOnceActivity.git.unshallow\": \"true\",\n    \"RunOnceActivity.typescript.service.memoryLimit.init\": \"true\",\n    \"codeWithMe.voiceChat.enabledByDefault\": \"false\",\n    \"git-widget-placeholder\": \"dora\",\n    \"last_opened_file_path\": \"/home/dora/Documents/ML-PROJECT\",\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\n    \"nodejs_package_manager_path\": \"npm\",\n    \"settings.editor.selected.configurable\": \"com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable\"\n  }\n}]]></component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-python-sdk-c59985aa861c-c2ffad84badb-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-261.24374.152\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"fccf9d07-f17c-4360-b024-95f07c3a200e\" name=\"Changes\" comment=\"\" />\n      <created>1779195996141</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1779195996141</updated>\n    </task>\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision f53470287be009734cc2a524c3762921e490a843)
++++ b/.idea/workspace.xml	(date 1779984827432)
+@@ -4,8 +4,10 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="fccf9d07-f17c-4360-b024-95f07c3a200e" name="Changes" comment="">
++    <list default="true" id="fccf9d07-f17c-4360-b024-95f07c3a200e" name="Changes" comment="feature: kalman entry point">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/launch/sim.launch.py" beforeDir="false" afterPath="$PROJECT_DIR$/launch/sim.launch.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/my_robot_project/kalman_filter_node.py" beforeDir="false" afterPath="$PROJECT_DIR$/my_robot_project/kalman_filter_node.py" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -40,23 +42,23 @@
+   </component>
+   <component name="NextEditCompletionFeaturesState">
+     <decayedCancelled>
+-      <entry key="MS100" value="1.6797664863204265" />
+-      <entry key="MS500" value="3.027205122761522" />
+-      <entry key="S2" value="3.7108998586505573" />
+-      <entry key="S5" value="4.116755638258679" />
+-      <entry key="S10" value="4.93814772104218" />
+-      <entry key="S30" value="6.798756928270421" />
+-      <entry key="S60" value="7.721173813248473" />
+-      <entry key="M2" value="8.307000936273226" />
+-      <entry key="M5" value="8.708537916821083" />
+-      <entry key="M10" value="8.851762854039013" />
+-      <entry key="M15" value="8.900608290116757" />
+-      <entry key="M30" value="8.95001811573608" />
+-      <entry key="H1" value="8.9749370666454" />
+-      <entry key="H2" value="8.98745047462676" />
+-      <entry key="H4" value="8.99372071500272" />
+-      <entry key="D1" value="8.998952823752392" />
+-      <entry key="W1" value="8.999850387986811" />
++      <entry key="MS100" value="1.0094763726065477" />
++      <entry key="MS500" value="1.7011230919415217" />
++      <entry key="S2" value="3.061666656057465" />
++      <entry key="S5" value="3.9538959849890127" />
++      <entry key="S10" value="4.658140849563285" />
++      <entry key="S30" value="5.4467833771967795" />
++      <entry key="S60" value="5.710640804699699" />
++      <entry key="M2" value="6.028269080604518" />
++      <entry key="M5" value="7.815352978718087" />
++      <entry key="M10" value="10.078360019617369" />
++      <entry key="M15" value="11.315682450340123" />
++      <entry key="M30" value="12.919688728185747" />
++      <entry key="H1" value="13.892276357757144" />
++      <entry key="H2" value="14.42812378738432" />
++      <entry key="H4" value="14.709409833167644" />
++      <entry key="D1" value="14.95090918579352" />
++      <entry key="W1" value="14.992970712556883" />
+     </decayedCancelled>
+     <decayedSelected>
+       <entry key="MS100" value="0.0" />
+@@ -78,23 +80,23 @@
+       <entry key="W1" value="0.0" />
+     </decayedSelected>
+     <decayedShown>
+-      <entry key="MS100" value="1.6211877315600653" />
+-      <entry key="MS500" value="3.0049291622781857" />
+-      <entry key="S2" value="3.704121271159177" />
+-      <entry key="S5" value="4.1137466972001935" />
+-      <entry key="S10" value="4.936151399139497" />
+-      <entry key="S30" value="6.797367529456467" />
+-      <entry key="S60" value="7.720225108714581" />
+-      <entry key="M2" value="8.306435715783865" />
+-      <entry key="M5" value="8.70828529774181" />
+-      <entry key="M10" value="8.851631664541186" />
+-      <entry key="M15" value="8.900519709481598" />
+-      <entry key="M30" value="8.949973255534374" />
+-      <entry key="H1" value="8.97491449228568" />
+-      <entry key="H2" value="8.987439151156448" />
+-      <entry key="H4" value="8.993715044166592" />
+-      <entry key="D1" value="8.998951877346597" />
+-      <entry key="W1" value="8.99985025275494" />
++      <entry key="MS100" value="0.9617626012522399" />
++      <entry key="MS500" value="1.6838072719104102" />
++      <entry key="S2" value="3.0531594340723056" />
++      <entry key="S5" value="3.948752444226387" />
++      <entry key="S10" value="4.654662556092816" />
++      <entry key="S30" value="5.445252787387716" />
++      <entry key="S60" value="5.7098116212633" />
++      <entry key="M2" value="6.027825030858057" />
++      <entry key="M5" value="7.815121367125994" />
++      <entry key="M10" value="10.078209775535255" />
++      <entry key="M15" value="11.315569611171103" />
++      <entry key="M30" value="12.919624042023724" />
++      <entry key="H1" value="13.892241496800214" />
++      <entry key="H2" value="14.428105661624773" />
++      <entry key="H4" value="14.709400587575612" />
++      <entry key="D1" value="14.950907618697071" />
++      <entry key="W1" value="14.992970488034699" />
+     </decayedShown>
+   </component>
+   <component name="ProjectColorInfo">{
+@@ -136,9 +138,31 @@
+       <option name="presentableId" value="Default" />
+       <updated>1779195996141</updated>
+     </task>
++    <task id="LOCAL-00001" summary="feature: kalman filter">
++      <option name="closed" value="true" />
++      <created>1779983392385</created>
++      <option name="number" value="00001" />
++      <option name="presentableId" value="LOCAL-00001" />
++      <option name="project" value="LOCAL" />
++      <updated>1779983392385</updated>
++    </task>
++    <task id="LOCAL-00002" summary="feature: kalman entry point">
++      <option name="closed" value="true" />
++      <created>1779983537658</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1779983537658</updated>
++    </task>
++    <option name="localTasksCounter" value="3" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+     <option name="version" value="3" />
+   </component>
++  <component name="VcsManagerConfiguration">
++    <MESSAGE value="feature: kalman filter" />
++    <MESSAGE value="feature: kalman entry point" />
++    <option name="LAST_COMMIT_MESSAGE" value="feature: kalman entry point" />
++  </component>
+ </project>
+\ No newline at end of file
