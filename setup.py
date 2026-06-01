@@ -21,6 +21,8 @@ setup(
             glob('models/*.sdf') + glob('models/*.png') + glob('models/*.obj')),
         (os.path.join('share', package_name, 'models', 'rover'),
             glob('models/rover/*')),
+        (os.path.join('share', package_name, 'resource'),
+            glob('resource/*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,

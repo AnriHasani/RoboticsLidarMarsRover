@@ -65,10 +65,13 @@ class WaypointNavigator(Node):
 
         # Simple proportional controller
         msg = Twist()
-        msg.angular.z = 1.0 * heading_error
-        msg.linear.x = 0.5 if abs(heading_error) < 0.5 else 0.1
+        msg.angular.z = 2.0 * heading_error
+        msg.linear.x = 0.5 if abs(heading_error) < 0.3 else 0.1
             
-        self.get_logger().info(f'Heading to WP {self.current_waypoint_idx}, Dist: {dist:.2f}m', throttle_duration_sec=2.0)
+        self.get_logger().info(
+            f'WP {self.current_waypoint_idx} | Dist: {dist:.2f}m | Err: {heading_error:.2f}rad | Yaw: {self.rover_theta:.2f}rad',
+            throttle_duration_sec=1.0
+        )
         self.cmd_pub.publish(msg)
 
     def stop_rover(self):

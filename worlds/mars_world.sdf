@@ -25,12 +25,6 @@
       <background>0.4 0.4 0.4</background>
     </scene>
 
-    <!-- Required for any sensor in the world to produce data -->
-    <plugin filename="gz-sim-sensors-system"
-            name="gz::sim::systems::Sensors">
-      <render_engine>ogre2</render_engine>
-    </plugin>
-
     <light name="mars_sun" type="directional">
       <pose>0 0 200 0 0.3 0</pose>
       <diffuse>0.85 0.55 0.35 1</diffuse>
@@ -45,9 +39,10 @@
 
         <collision name="terrain_col">
           <geometry>
-            <box>
-              <size>100 100 0.1</size>
-            </box>
+            <mesh>
+              <uri>model://mars_terrain.obj</uri>
+              <scale>2 2 1</scale>
+            </mesh>
           </geometry>
           <surface>
             <friction>
@@ -78,7 +73,7 @@
     <include>
       <uri>model://rover</uri>
       <name>rover</name>
-      <pose>0 0 2.0 0 0 0</pose>
+      <pose>0 0 1.5 0 0 0</pose>
     </include>
 
     <!-- Flat ground under the terrain (keeps robot from falling) -->

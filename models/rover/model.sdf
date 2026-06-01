@@ -33,7 +33,7 @@
     </link>
 
     <link name="left_wheel1">
-      <pose>1.14 -1.07 0.26 0 0 0</pose>
+      <pose>1.14 -1.1 0.26 0 0 0</pose>
       <inertial><mass>10</mass><inertia><ixx>0.1</ixx><ixy>0</ixy><ixz>0</ixz><iyy>0.1</iyy><iyz>0</iyz><izz>0.1</izz></inertia></inertial>
       <collision name="left_wheel1_collision">
         <pose>0 0 0 -1.5708 0 0</pose>
@@ -41,7 +41,7 @@
         <surface>
           <friction>
             <ode>
-              <mu>1.5</mu><mu2>2.0</mu2>
+              <mu>0.5</mu><mu2>0.5</mu2>
               <slip1>0</slip1><slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -62,7 +62,7 @@
     </link>
 
     <link name="left_wheel2">
-      <pose>0.08 -1.2 0.26 0 0 0</pose>
+      <pose>0.08 -1.1 0.26 0 0 0</pose>
       <inertial><mass>10</mass><inertia><ixx>0.1</ixx><ixy>0</ixy><ixz>0</ixz><iyy>0.1</iyy><iyz>0</iyz><izz>0.1</izz></inertia></inertial>
       <collision name="left_wheel2_collision">
         <pose>0 0 0 -1.5708 0 0</pose>
@@ -91,7 +91,7 @@
     </link>
 
     <link name="left_wheel3">
-      <pose>-1.07 -1.07 0.26 0 0 0</pose>
+      <pose>-1.07 -1.1 0.26 0 0 0</pose>
       <inertial><mass>10</mass><inertia><ixx>0.1</ixx><ixy>0</ixy><ixz>0</ixz><iyy>0.1</iyy><iyz>0</iyz><izz>0.1</izz></inertia></inertial>
       <collision name="left_wheel3_collision">
         <pose>0 0 0 -1.5708 0 0</pose>
@@ -99,7 +99,7 @@
         <surface>
           <friction>
             <ode>
-              <mu>1.5</mu><mu2>2.0</mu2>
+              <mu>0.5</mu><mu2>0.5</mu2>
               <slip1>0</slip1><slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -120,7 +120,7 @@
     </link>
 
     <link name="right_wheel1">
-      <pose>1.14 1.07 0.26 0 0 0</pose>
+      <pose>1.14 1.1 0.26 0 0 0</pose>
       <inertial><mass>10</mass><inertia><ixx>0.1</ixx><ixy>0</ixy><ixz>0</ixz><iyy>0.1</iyy><iyz>0</iyz><izz>0.1</izz></inertia></inertial>
       <collision name="right_wheel1_collision">
         <pose>0 0 0 -1.5708 0 0</pose>
@@ -128,7 +128,7 @@
         <surface>
           <friction>
             <ode>
-              <mu>1.5</mu><mu2>2.0</mu2>
+              <mu>0.5</mu><mu2>0.5</mu2>
               <slip1>0</slip1><slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -149,7 +149,7 @@
     </link>
 
     <link name="right_wheel2">
-      <pose>0.08 1.2 0.26 0 0 0</pose>
+      <pose>0.08 1.1 0.26 0 0 0</pose>
       <inertial><mass>10</mass><inertia><ixx>0.1</ixx><ixy>0</ixy><ixz>0</ixz><iyy>0.1</iyy><iyz>0</iyz><izz>0.1</izz></inertia></inertial>
       <collision name="right_wheel2_collision">
         <pose>0 0 0 -1.5708 0 0</pose>
@@ -178,7 +178,7 @@
     </link>
 
     <link name="right_wheel3">
-      <pose>-1.07 1.07 0.26 0 0 0</pose>
+      <pose>-1.07 1.1 0.26 0 0 0</pose>
       <inertial><mass>10</mass><inertia><ixx>0.1</ixx><ixy>0</ixy><ixz>0</ixz><iyy>0.1</iyy><iyz>0</iyz><izz>0.1</izz></inertia></inertial>
       <collision name="right_wheel3_collision">
         <pose>0 0 0 -1.5708 0 0</pose>
@@ -186,7 +186,7 @@
         <surface>
           <friction>
             <ode>
-              <mu>1.5</mu><mu2>2.0</mu2>
+              <mu>0.5</mu><mu2>0.5</mu2>
               <slip1>0</slip1><slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -262,7 +262,7 @@
       <right_joint>right_wheel1_j</right_joint>
       <right_joint>right_wheel2_j</right_joint>
       <right_joint>right_wheel3_j</right_joint>
-      <wheel_separation>2.14</wheel_separation>
+      <wheel_separation>2.2</wheel_separation>
       <wheel_radius>0.27</wheel_radius>
       <topic>/rover/cmd_vel</topic>
       <odom_topic>/rover/odometry</odom_topic>
@@ -312,16 +312,12 @@
       </collision>
 
       <sensor name="lidar" type="gpu_lidar">
-        <update_rate>10</update_rate>
-        <always_on>true</always_on>
-        <visualize>true</visualize>
-        <!--
-          Topic name here is the Gazebo-internal topic.
-          The bridge in sim.launch.py translates /scan → ROS /scan.
-          These must match.
-        -->
         <topic>/scan</topic>
-        <ray>
+        <update_rate>10</update_rate>
+        <alwaysOn>1</alwaysOn>
+        <visualize>true</visualize>
+        <gz_frame_id>lidar_link</gz_frame_id>
+        <lidar>
           <scan>
             <horizontal>
               <samples>360</samples>
@@ -331,6 +327,7 @@
             </horizontal>
             <vertical>
               <samples>1</samples>
+              <resolution>1</resolution>
               <min_angle>0</min_angle>
               <max_angle>0</max_angle>
             </vertical>
@@ -345,7 +342,7 @@
             <mean>0.0</mean>
             <stddev>0.015</stddev>
           </noise>
-        </ray>
+        </lidar>
       </sensor>
     </link>
 
