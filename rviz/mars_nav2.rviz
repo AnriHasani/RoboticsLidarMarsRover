@@ -1,0 +1,117 @@
+{
+    "panels": [
+        {
+            "id": 0,
+            "name": "Displays",
+            "type": "rviz_common/Displays"
+        },
+        {
+            "id": 1,
+            "name": "Views",
+            "type": "rviz_common/Views"
+        }
+    ],
+    "visualization_manager": {
+        "class": "rviz_common/VisualizationManager",
+        "name": "Root",
+        "global_frame": "map",
+        "fixed_frame": "map",
+        "frame_update_timer": {
+            "period": 0
+        }
+    },
+    "displays": [
+        {
+            "class": "rviz_default_plugins/Grid",
+            "name": "Grid",
+            "value": true,
+            "ReferenceFrame": "map",
+            "PlaneCellCount": 30
+        },
+        {
+            "class": "rviz_default_plugins/TF",
+            "name": "TF",
+            "value": true,
+            "frame_timeout": 0.05,
+            "marker_scale": 0.5,
+            "show_names": true,
+            "update_interval": 0
+        },
+        {
+            "class": "rviz_default_plugins/LaserScan",
+            "name": "Scan",
+            "value": true,
+            "Topic": "/scan",
+            "decay_time": 0.1,
+            "size": 0.05,
+            "style": 0,
+            "alpha": 0.8
+        },
+        {
+            "class": "rviz_default_plugins/Map",
+            "name": "SLAM Map",
+            "value": true,
+            "Topic": "/map",
+            "frame_check_timer": {
+                "period": 0.5
+            },
+            "update_topic": true
+        },
+        {
+            "class": "rviz_default_plugins/Polygon",
+            "name": "Local Costmap",
+            "value": true,
+            "Topic": "/local_costmap/costmap_raw",
+            "color": { "r": 0, "g": 128, "b": 0, "a": 80 }
+        },
+        {
+            "class": "rviz_default_plugins/Path",
+            "name": "Planned Path",
+            "value": true,
+            "Topic": "/plan",
+            "color": { "r": 0, "g": 0, "b": 255, "a": 255 }
+        },
+        {
+            "class": "rviz_default_plugins/PoseArray",
+            "name": "Particle Filter",
+            "value": false,
+            "Topic": "/particle_cloud",
+            "color": { "r": 255, "g": 0, "b": 0, "a": 128 },
+            "shape": 0
+        },
+        {
+            "class": "rviz_default_plugins/RobotModel",
+            "name": "RobotModel",
+            "value": false,
+            "visual_enabled": true,
+            "collision_enabled": false
+        },
+        {
+            "class": "rviz_default_plugins/Marker",
+            "name": "Goal Marker",
+            "value": true,
+            "Topic": "/goal_marker"
+        },
+        {
+            "class": "nav2_rviz_plugins/ParticleCloud",
+            "name": "AMCL Particles",
+            "value": false
+        },
+        {
+            "class": "rviz_default_plugins/Odometry",
+            "name": "Odometry",
+            "value": false,
+            "Topic": "/odom",
+            "color": { "r": 255, "g": 0, "b": 0, "a": 128 }
+        }
+    ],
+    "views": {
+        "current": {
+            "class": "rviz_default_plugins/Orbit",
+            "distance": 20,
+            "focal_point": { "x": 0, "y": 0, "z": 0 },
+            "pitch": 0.8,
+            "yaw": 1.57
+        }
+    }
+}

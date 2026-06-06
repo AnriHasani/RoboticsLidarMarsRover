@@ -1,120 +1,56 @@
 # RoboticsLidarMarsRover
-Project for Elements of Robotics and Automatisation [CIS230.e] made by Anri Hasani and Dora Demiri
+Project for Elements of Robotics and Automatisation [CIS230.e]
 
-## Table of Contents
+## Overview
+This project implements a robust autonomous Mars Rover navigation system. It features an **Integrated Rover Navigator** that combines high-fidelity motion control with reactive obstacle avoidance.
 
-- [Distrobox Setup](#distrobox-setup)
-- [Install ROS 2 Jazzy + Gazebo](#install-ros-2-jazzy--gazebo)
-- [Auto-source ROS 2](#auto-source-ros-2)
-- [Fix Gazebo Transport](#fix-gazebo-transport-required-for-distrobox)
-- [Building](#building)
-- [Project Structure](#project-structure)
-- [Running](#running)
-- [Verify](#verify)
-- [Editing Code](#editing-code)
+## Architecture
+1. **Gazebo Sim**: High-fidelity Martian environment simulation.
+2. **Kalman Filter**: Fuses Wheel Odometry and IMU (via simulated noise) to provide precise pose estimation.
+3. **Integrated Navigator**:
+   - **Pure Pursuit**: Standard NASA/Industrial algorithm for smooth path following.
+   - **Artificial Potential Fields (APF)**: Reactive avoidance where obstacles "push" the rover away while the goal "pulls" it.
+   - **State Machine**: Handles mission phases (Navigating, Blocked, Recovering).
 
----
+## Setup
 
-# ROS 2 Setup Guide
-
-## Distrobox Setup
-
+### 1. Distrobox Setup (Optional)
 ```bash
-distrobox create --image ubuntu:24.04 --name mars-rover-ros-two
-distrobox enter mars-rover-ros-two
+distrobox create --image ubuntu:24.04 --name mars-rover
+distrobox enter mars-rover
 ```
 
-## Install ROS 2 Jazzy + Gazebo
+### 2. Install ROS 2 Jazzy
+Follow the standard ROS 2 Jazzy installation instructions for Ubuntu 24.04.
 
+### 3. Install Dependencies
 ```bash
-sudo apt update && sudo apt install -y software-properties-common
-sudo add-apt-repository -y universe
-sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
-  -o /usr/share/keyrings/ros-archive-keyring.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
-sudo apt update
-sudo apt install -y ros-jazzy-desktop python3-colcon-common-extensions ros-jazzy-ros-gz-bridge ros-jazzy-ros-gz-sim
+sudo apt update && sudo apt install -y \
+  ros-jazzy-ros-gz-bridge ros-jazzy-ros-gz-sim
 ```
 
-## Auto-source ROS 2
-
-**If your host OS uses bash**
-
-Add this to `~/.bashrc`:
-
-```bash
-if [ -n "$DISTROBOX_ENTER_PATH" ] || [ -f /.dockerenv ]; then
-  if [ -f /opt/ros/jazzy/setup.bash ]; then
-    source /opt/ros/jazzy/setup.bash
-  fi
-fi
-```
-
-## Fix Gazebo Transport (Required for Distrobox)
-
-Add this to `~/.bashrc`:
-
-```bash
-export GZ_IP=127.0.0.1
-export LIBGL_ALWAYS_SOFTWARE=1
-export QT_QPA_PLATFORM=xcb
-export GDK_BACKEND=x11
-```
-
-## Building
-
+### 4. Building
 ```bash
 cd ~/ros2_ws
 colcon build --packages-select my_robot_project
-```
-
-## Running
-
-Three terminals, all inside the distrobox (`distrobox enter mars-rover-ros-two`, then `bash`).
-
-**Terminal 1 — Launch Gazebo + Bridge**
-
-```bash
-cd ~/ros2_ws
 source install/setup.bash
-ros2 launch my_robot_project sim.launch.py
 ```
 
-**Terminal 2 — Kalman Filter Node**
+## Running the Mission
+You can launch the entire mission with a **single command**:
 
 ```bash
-cd ~/ros2_ws
-source install/setup.bash
-ros2 run my_robot_project kalman_filter_node
+ros2 launch my_robot_project mars_rover.launch.py
 ```
 
-**Terminal 3 — Waypoint Navigator Node**
+### What happens:
+- The simulation starts and spawns the rover.
+- The Kalman Filter initializes its pose.
+- After a 10s stabilization delay, the **Integrated Navigator** takes over.
+- The rover will automatically traverse through 6 predefined waypoints while fluidly avoiding rocks and obstacles.
 
+## Verification
 ```bash
-cd ~/ros2_ws
-source install/setup.bash
-ros2 run my_robot_project pid_navigator
-
-```
-
-*Note: Nodes automatically use simulation time, no extra flags required.*
-
-## Verify
-
-```bash
-source ~/ros2_ws/install/setup.bash
-ros2 topic list
 ros2 topic echo /kalman_pose  # Check filtered position
 ros2 topic echo /rover/cmd_vel  # Check navigation commands
-```
-
-## Editing Code
-
-Edit `my_robot_project/kalman_filter_node.py` or `my_robot_project/waypoint_navigator.py`, then stop (`Ctrl+C`) and re-run the node. No rebuild needed for Python changes.
-
-Rebuild if you modify `setup.py`, `package.xml`, or add new files:
-
-```bash
-cd ~/ros2_ws
-colcon build --packages-select my_robot_project
 ```

@@ -12,9 +12,12 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        # --- these lines make colcon copy your files into install/ ---
         (os.path.join('share', package_name, 'launch'),
             glob('launch/*.py')),
+        (os.path.join('share', package_name, 'config'),
+            glob('config/*.yaml')),
+        (os.path.join('share', package_name, 'rviz'),
+            glob('rviz/*.rviz')),
         (os.path.join('share', package_name, 'worlds'),
             glob('worlds/*.sdf')),
         (os.path.join('share', package_name, 'models'),
@@ -35,9 +38,9 @@ setup(
         'console_scripts': [
             'my_node = my_robot_project.my_node:main',
             'kalman_filter_node = my_robot_project.kalman_filter_node:main',
-            'navigator_node = my_robot_project.waypoint_navigator:main',
-            'pid_navigator = my_robot_project.pid_controller:main',
+            'integrated_navigator = my_robot_project.integrated_navigator:main',
             'odom_to_tf = my_robot_project.odom_to_tf:main',
+            'mission_control = my_robot_project.mission_control:main',
         ],
     },
 )
