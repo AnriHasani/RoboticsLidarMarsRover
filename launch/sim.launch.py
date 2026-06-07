@@ -58,13 +58,6 @@ def generate_launch_description():
         parameters=[{'use_sim_time': True}]
     )
     
-    kalman_filter = Node(
-        package='my_robot_project',
-        executable='kalman_filter_node',
-        output='screen',
-        parameters=[{'use_sim_time': True}]
-    )
-    
     slam_toolbox = LifecycleNode(
         package='slam_toolbox',
         executable='async_slam_toolbox_node',
@@ -132,7 +125,6 @@ def generate_launch_description():
         bridge,
         robot_state_publisher,
         odom_to_tf,
-        kalman_filter,
         slam_toolbox,
     ])
 

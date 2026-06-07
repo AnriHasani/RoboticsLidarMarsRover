@@ -4,11 +4,11 @@
     <link name="base_link">
       <pose>0 0 0.8 0 0 0</pose>
       <inertial>
-        <mass>1025</mass>
+        <mass>500</mass>
         <inertia>
-          <ixx>10</ixx><ixy>0</ixy><ixz>0</ixz>
-          <iyy>25</iyy><iyz>0</iyz>
-          <izz>20</izz>
+          <ixx>5</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>12</iyy><iyz>0</iyz>
+          <izz>10</izz>
         </inertia>
       </inertial>
       <collision name="base_link_collision">
@@ -41,7 +41,7 @@
         <surface>
           <friction>
             <ode>
-              <mu>0.5</mu><mu2>0.5</mu2>
+              <mu>2.0</mu><mu2>2.0</mu2>
               <slip1>0</slip1><slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -99,7 +99,7 @@
         <surface>
           <friction>
             <ode>
-              <mu>0.5</mu><mu2>0.5</mu2>
+              <mu>2.0</mu><mu2>2.0</mu2>
               <slip1>0</slip1><slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -128,7 +128,7 @@
         <surface>
           <friction>
             <ode>
-              <mu>0.5</mu><mu2>0.5</mu2>
+              <mu>2.0</mu><mu2>2.0</mu2>
               <slip1>0</slip1><slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -186,7 +186,7 @@
         <surface>
           <friction>
             <ode>
-              <mu>0.5</mu><mu2>0.5</mu2>
+              <mu>2.0</mu><mu2>2.0</mu2>
               <slip1>0</slip1><slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -276,15 +276,12 @@
       <topic>/rover/joint_states</topic>
     </plugin>
 
-    <!-- LiDAR sensor link — mounted on top of the rover chassis -->
+    <!-- LiDAR sensor link — mounted at front chassis edge -->
     <link name="lidar_link">
       <!--
-        Pose is relative to the model origin.
-        0 0 1.15 means: centred (0,0) and 1.15m above model origin.
-        The base_link is at z=0.8 and the chassis box is 0.6m tall,
-        so top of chassis is at z=0.8+0.3=1.1m. We place LiDAR at 1.15m.
+        Mounted at z=0.5 (front bottom edge) with 5 deg tilt
       -->
-      <pose>0 0 1.15 0 0 0</pose>
+      <pose>0.6 0 0.5 0 0.087 0</pose>
 
       <inertial>
         <mass>0.1</mass>

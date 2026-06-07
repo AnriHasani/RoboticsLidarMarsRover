@@ -94,11 +94,11 @@
     </model>
 
     <!-- Waypoint markers (yellow spheres at each waypoint) -->
-    <model name="wp_0"><static>true</static><pose>5 0 1 0 0 0</pose><link name="l"><visual name="v"><geometry><sphere><radius>0.2</radius></sphere></geometry><material><ambient>1 1 0 1</ambient><diffuse>1 1 0 1</diffuse></material></visual></link></model>
-    <model name="wp_1"><static>true</static><pose>5 5 1 0 0 0</pose><link name="l"><visual name="v"><geometry><sphere><radius>0.2</radius></sphere></geometry><material><ambient>1 1 0 1</ambient><diffuse>1 1 0 1</diffuse></material></visual></link></model>
-    <model name="wp_2"><static>true</static><pose>0 5 1 0 0 0</pose><link name="l"><visual name="v"><geometry><sphere><radius>0.2</radius></sphere></geometry><material><ambient>1 1 0 1</ambient><diffuse>1 1 0 1</diffuse></material></visual></link></model>
-    <model name="wp_3"><static>true</static><pose>-5 5 1 0 0 0</pose><link name="l"><visual name="v"><geometry><sphere><radius>0.2</radius></sphere></geometry><material><ambient>1 1 0 1</ambient><diffuse>1 1 0 1</diffuse></material></visual></link></model>
-    <model name="wp_4"><static>true</static><pose>-5 0 1 0 0 0</pose><link name="l"><visual name="v"><geometry><sphere><radius>0.2</radius></sphere></geometry><material><ambient>1 1 0 1</ambient><diffuse>1 1 0 1</diffuse></material></visual></link></model>
+    <model name="wp_0"><static>true</static><pose>10 0 1 0 0 0</pose><link name="l"><visual name="v"><geometry><sphere><radius>0.2</radius></sphere></geometry><material><ambient>1 1 0 1</ambient><diffuse>1 1 0 1</diffuse></material></visual></link></model>
+    <model name="wp_1"><static>true</static><pose>10 10 1 0 0 0</pose><link name="l"><visual name="v"><geometry><sphere><radius>0.2</radius></sphere></geometry><material><ambient>1 1 0 1</ambient><diffuse>1 1 0 1</diffuse></material></visual></link></model>
+    <model name="wp_2"><static>true</static><pose>0 10 1 0 0 0</pose><link name="l"><visual name="v"><geometry><sphere><radius>0.2</radius></sphere></geometry><material><ambient>1 1 0 1</ambient><diffuse>1 1 0 1</diffuse></material></visual></link></model>
+    <model name="wp_3"><static>true</static><pose>-10 10 1 0 0 0</pose><link name="l"><visual name="v"><geometry><sphere><radius>0.2</radius></sphere></geometry><material><ambient>1 1 0 1</ambient><diffuse>1 1 0 1</diffuse></material></visual></link></model>
+    <model name="wp_4"><static>true</static><pose>-10 0 1 0 0 0</pose><link name="l"><visual name="v"><geometry><sphere><radius>0.2</radius></sphere></geometry><material><ambient>1 1 0 1</ambient><diffuse>1 1 0 1</diffuse></material></visual></link></model>
     <model name="wp_5"><static>true</static><pose>0 0 1 0 0 0</pose><link name="l"><visual name="v"><geometry><sphere><radius>0.2</radius></sphere></geometry><material><ambient>0 1 0 1</ambient><diffuse>0 1 0 1</diffuse></material></visual></link></model>
 
     <model name="rock_1">
@@ -159,7 +159,7 @@
 
     <model name="rock_5">
       <static>true</static>
-      <pose>10 10 0.9 0 0 0.7</pose>
+      <pose>8 12 0.9 0 0 0.7</pose>
       <link name="link">
         <collision name="collision">
           <geometry><box><size>1.5 1.5 0.8</size></box></geometry>
