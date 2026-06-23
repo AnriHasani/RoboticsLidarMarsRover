@@ -1,5 +1,4 @@
 # RoboticsLidarMarsRover
-Project for Elements of Robotics and Automatisation [CIS230.e] made by Anri Hasani and Dora Demiri
 
 ## Table of Contents
 
@@ -143,3 +142,10 @@ Rebuild if you modify `setup.py`, `package.xml`, `models/my_robot.sdf`, or add n
 cd ~/ros2_ws
 colcon build --packages-select my_robot_project
 ```
+
+## Authors
+
+* **Anri Hasani**
+* **Dora Demiri**
+
+This project was designed and developed by Anri Hasani and Dora Demiri as part of the *Robotics Lidar Mars Rover* project, focusing on ROS 2, Gazebo simulation, robot modeling, and autonomous navigation.
